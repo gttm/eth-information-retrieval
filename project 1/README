@@ -1,0 +1,34 @@
+# Building the project
+We use Maven for build automation. In order to build the project tinyIR should be installed in the Maven local repository using the following command:
+mvn install:install-file "-Dfile=tinyir.jar" "-DgroupId=ch.ethz.dal" "-DartifactId=tinyir" "-Dversion=1.0.0" "-Dpackaging=jar"
+
+Then the project can be built using:
+mvn package
+
+The produced jar which includes all dependencies is located at:
+target/textcategorization-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+
+# Running the project
+When running the jar, the working directory must contain a folder data with the following directory tree:
+data
+|--zips
+   |--test
+      |--test.zip
+   |--train
+      |--train.zip
+   |--validation
+      |--validation.zip
+
+To train the Naive Bayes classifier and ouput the predictions for the test set in ir-2016-1-project-18-nb.txt: 
+java -Xmx5G -jar textcategorization-0.0.1-SNAPSHOT-jar-with-dependencies.jar bayes 0 0 <code_threshold> <vocabulary_threshold> 0 0 <laplace_smoothing_alpha>
+
+To train the Logistic classifier and ouput the predictions for the test set in ir-2016-1-project-18-lr.txt: 
+java -Xmx5G -jar textcategorization-0.0.1-SNAPSHOT-jar-with-dependencies.jar lr <learning_rate> 0 <code_threshold> <vocabulary_threshold> <max_epochs> <max_epochs_without_improvement> 0
+
+To train the SVM classifier and ouput the predictions for the test set in ir-2016-1-project-18-svm.txt: 
+java -Xmx5G -jar textcategorization-0.0.1-SNAPSHOT-jar-with-dependencies.jar svm 0 <svm_lambda> <code_threshold> <vocabulary_threshold> 0 0 0 
+
+To produce the labels we predicted for the test set, run the program with following parameters:
+java -Xmx5G -jar textcategorization-0.0.1-SNAPSHOT-jar-with-dependencies.jar bayes 0 0 400 40 0 0 1e-8
+java -Xmx5G -jar textcategorization-0.0.1-SNAPSHOT-jar-with-dependencies.jar lr 1 0 300 60 15 1 0
+java -Xmx5G -jar textcategorization-0.0.1-SNAPSHOT-jar-with-dependencies.jar svm 0 0.1 100 40 0 0 0
